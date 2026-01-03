@@ -3,174 +3,175 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NYC | RSP TERMINAL 2026</title>
+    <title>National Youth Council | Election 2026</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;700;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
-        :root { --rsp-orange: #ff4d00; --bg: #050505; --card: #0d0d0d; }
         body { 
-            background-color: var(--bg); 
-            color: white; 
-            font-family: 'Space Grotesk', sans-serif;
-            letter-spacing: -0.02em;
-            overflow-x: hidden;
+            background: #f8fafc; 
+            color: #1e293b; 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
         }
-
-        /* Industrial UI - Brutalist Aesthetic */
-        .voter-card {
-            background: var(--card);
-            border: 1px solid #222;
-            border-left: 5px solid #222;
-            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        .glass-card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 20px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        .voter-card:hover { border-left-color: var(--rsp-orange); background: #111; }
-
-        .sharp-btn {
-            background: white; color: black; font-weight: 900; text-transform: uppercase;
-            clip-path: polygon(12% 0, 100% 0, 100% 70%, 88% 100%, 0 100%, 0% 30%);
-            transition: 0.2s;
+        .glass-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
         }
-        .sharp-btn:active { transform: scale(0.92); background: var(--rsp-orange); color: white; }
-        .sharp-btn:disabled { opacity: 0.2; pointer-events: none; }
-
-        /* Accurate Stats Bars */
-        .track { height: 4px; background: #1a1a1a; position: relative; overflow: hidden; margin-top: 8px; }
-        .fill { height: 100%; background: var(--rsp-orange); transition: width 1s ease-in-out; }
-        
-        /* Loading Spinner */
-        .loader { border: 2px solid #222; border-top: 2px solid var(--rsp-orange); border-radius: 50%; width: 20px; height: 20px; animation: spin 0.8s linear infinite; display: inline-block; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .vote-button {
+            background: linear-gradient(135deg, #ff4d00 0%, #ff8c00 100%);
+            color: white;
+            font-weight: 700;
+            border-radius: 12px;
+            transition: all 0.2s;
+        }
+        .vote-button:hover { filter: brightness(1.1); transform: scale(1.02); }
+        .progress-track {
+            background: #f1f5f9;
+            height: 12px;
+            border-radius: 999px;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #ff4d00, #ffb300);
+            border-radius: 999px;
+            transition: width 2s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
     </style>
 </head>
-<body class="p-4 md:p-12">
+<body class="pb-10">
 
-    <header class="max-w-4xl mx-auto mb-12 flex flex-col md:flex-row justify-between items-end border-b border-white/10 pb-6">
-        <div>
-            <p class="text-[9px] font-bold tracking-[0.4em] text-orange-600 mb-1 uppercase">Official Election Portal 2026</p>
-            <h1 class="text-5xl font-black italic tracking-tighter leading-none uppercase">NYC <span class="text-orange-600">RSP</span></h1>
-        </div>
-        <div id="sync-status" class="text-right mt-4 md:mt-0 font-mono text-[8px] opacity-30 uppercase">
-            System: Connecting...
-        </div>
-    </header>
-
-    <main class="max-w-4xl mx-auto">
-        <div id="vote-section" class="grid grid-cols-1 gap-4">
-            <div class="p-10 text-center opacity-20 italic">Initializing Secure Ledger...</div>
-        </div>
-
-        <section class="mt-20 border-t border-white/10 pt-10">
-            <div class="flex items-center gap-3 mb-10">
-                <div class="h-6 w-1 bg-orange-600"></div>
-                <h2 class="text-[10px] font-bold uppercase tracking-[0.4em] text-gray-500">Live Global Audit Results</h2>
+    <nav class="bg-white border-b border-slate-200 sticky top-0 z-50">
+        <div class="max-w-5xl mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="flex items-center gap-2">
+                <div class="w-10 h-10 bg-orange-600 rounded-xl flex items-center justify-center text-white font-bold">R</div>
+                <span class="font-extrabold text-xl tracking-tight uppercase">RSP <span class="text-orange-600">NYC</span></span>
             </div>
-            <div id="stats-section" class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-10"></div>
-        </section>
+            <div class="flex items-center gap-2 bg-green-50 px-3 py-1 rounded-full border border-green-100">
+                <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+                <span class="text-[10px] font-bold text-green-700 uppercase tracking-widest">Live Node</span>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-4xl mx-auto px-6 mt-12">
+        
+        <div class="text-center mb-16">
+            <h1 class="text-4xl md:text-5xl font-extrabold text-slate-900 mb-4 tracking-tight">Council Leadership 2026</h1>
+            <p class="text-slate-500 text-lg">Cast your digital ballot for the National Youth Council executive seats.</p>
+        </div>
+
+        <div id="ballot-section" class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-20"></div>
+
+        <div class="bg-white border border-slate-200 rounded-3xl p-8 shadow-sm">
+            <div class="flex justify-between items-center mb-10">
+                <h2 class="text-2xl font-extrabold text-slate-900">Real-Time Audit</h2>
+                <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Syncing Every 4s</span>
+            </div>
+            <div id="leaderboard" class="space-y-8"></div>
+        </div>
+
     </main>
 
-    <footer class="mt-24 text-center pb-12 opacity-50 border-t border-white/5 pt-8">
-        <p class="text-[8px] uppercase tracking-[0.5em] text-gray-400 font-bold mb-1">Signed & Verified by</p>
-        <p class="text-sm font-black italic uppercase tracking-widest text-white">Anmol Systems</p>
+    <footer class="mt-28 py-12 border-t border-slate-200 bg-white">
+        <div class="max-w-4xl mx-auto px-6 text-center">
+            <div class="inline-flex items-center gap-2 px-4 py-2 bg-slate-50 border border-slate-200 rounded-full mb-6">
+                <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest italic">Simulation Environment</span>
+            </div>
+            <div class="space-y-1">
+                <p class="text-xs font-semibold text-slate-400 uppercase tracking-[0.3em]">Handcrafted with ❤️</p>
+                <h2 class="text-xl font-extrabold text-slate-900 tracking-tight">ANMOL <span class="text-orange-600">SYSTEMS</span></h2>
+                <p class="text-sm text-slate-500 italic font-medium pt-2">"Just made for fun by Anmol"</p>
+            </div>
+        </div>
     </footer>
 
     <script>
-        const API = '/api/vote';
-        const LOCK_KEY = 'rsp_user_voted_2026';
-        let candidates = [];
+        // Start Data
+        let candidates = [
+            { id: 1, name: "Sohan Karki", votes: 1240, img: "sohan.png" },
+            { id: 2, name: "Shubham Paneru", votes: 852, img: "shubham.png" },
+            { id: 3, name: "Narendra Modi", votes: 712, img: "modi.png" }
+        ];
 
-        async function syncData() {
-            try {
-                const response = await fetch(API);
-                if (!response.ok) throw new Error();
-                candidates = await response.json();
-                
-                document.getElementById('sync-status').innerHTML = `Node: Online<br>Ledger: Updated ${new Date().toLocaleTimeString()}`;
-                
-                renderStats();
-                if (!localStorage.getItem(LOCK_KEY)) {
-                    renderGrid();
-                } else {
-                    showLocked();
-                }
-            } catch (err) {
-                document.getElementById('sync-status').innerText = 'System: Sync Error';
+        function renderBallot() {
+            const container = document.getElementById('ballot-section');
+            if (localStorage.getItem('rsp_voted_final')) {
+                container.innerHTML = `
+                    <div class="col-span-full py-12 text-center bg-orange-50 rounded-3xl border border-orange-100">
+                        <div class="text-4xl mb-4">🏆</div>
+                        <h2 class="text-2xl font-bold text-orange-800">Your Ballot is Sealed</h2>
+                        <p class="text-orange-600">Thank you for participating in the simulation.</p>
+                    </div>`;
+                return;
             }
-        }
 
-        function renderGrid() {
-            const grid = document.getElementById('vote-section');
-            const images = { 1: 'sohan.png', 2: 'shubham.png', 3: 'modi.png' };
-            
-            grid.innerHTML = candidates.map(c => `
-                <div class="voter-card p-4 flex items-center justify-between gap-4 group">
-                    <div class="flex items-center gap-5">
-                        <div class="w-16 h-16 bg-zinc-900 flex-shrink-0 overflow-hidden">
-                            <img src="${images[c.id]}" onerror="this.src='https://api.dicebear.com/7.x/initials/svg?seed=${c.name}'" class="w-full h-full object-cover grayscale group-hover:grayscale-0">
-                        </div>
-                        <div>
-                            <p class="text-[8px] font-bold text-gray-600 mb-0.5 uppercase tracking-widest italic">ID: 00${c.id}</p>
-                            <h3 class="text-xl font-black uppercase italic tracking-tighter">${c.name}</h3>
-                        </div>
+            container.innerHTML = candidates.map(c => `
+                <div class="glass-card p-6 flex flex-col items-center text-center">
+                    <div class="w-24 h-24 rounded-full border-4 border-slate-50 overflow-hidden mb-4 bg-slate-100 shadow-inner">
+                        <img src="${c.img}" onerror="this.src='https://api.dicebear.com/7.x/initials/svg?seed=${c.name}'" class="w-full h-full object-cover">
                     </div>
-                    <button id="btn-${c.id}" onclick="castVote(${c.id})" class="sharp-btn px-10 py-4 text-[10px]">Confirm</button>
+                    <h3 class="font-bold text-lg text-slate-900">${c.name}</h3>
+                    <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-6">Candidate #00${c.id}</p>
+                    <button onclick="castVote(${c.id})" class="vote-button w-full py-3">Vote Now</button>
                 </div>
             `).join('');
         }
 
-        async function castVote(id) {
-            const btn = document.getElementById(`btn-${id}`);
-            btn.disabled = true;
-            btn.innerHTML = `<span class="loader"></span>`;
+        function castVote(id) {
+            candidates.find(c => c.id === id).votes++;
+            localStorage.setItem('rsp_voted_final', 'true');
+            
+            // Trigger Confetti Celebration
+            confetti({
+                particleCount: 150,
+                spread: 70,
+                origin: { y: 0.6 },
+                colors: ['#ff4d00', '#ffb300', '#ffffff']
+            });
 
-            try {
-                const res = await fetch(API, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ candidateId: id })
-                });
-
-                if (res.ok) {
-                    localStorage.setItem(LOCK_KEY, 'true');
-                    syncData();
-                }
-            } catch (e) {
-                alert("Connection lost. Try again.");
-                btn.disabled = false;
-                btn.innerText = "Confirm";
-            }
-        }
-
-        function showLocked() {
-            document.getElementById('vote-section').innerHTML = `
-                <div class="border border-orange-600/20 p-16 text-center bg-orange-600/5">
-                    <h2 class="text-3xl font-black uppercase italic tracking-tighter text-orange-600 mb-2">Vote Recorded</h2>
-                    <p class="text-[9px] text-gray-500 uppercase tracking-widest">Digital signature applied. System hardware-locked.</p>
-                </div>
-            `;
+            renderBallot();
+            renderStats();
         }
 
         function renderStats() {
-            const stats = document.getElementById('stats-section');
+            const board = document.getElementById('leaderboard');
             const total = candidates.reduce((s, c) => s + c.votes, 0);
 
-            stats.innerHTML = candidates.map(c => {
-                const p = total === 0 ? 0 : (c.votes / total * 100).toFixed(1);
+            board.innerHTML = candidates.map(c => {
+                const p = ((c.votes / total) * 100).toFixed(1);
                 return `
-                    <div class="font-mono">
-                        <div class="flex justify-between items-end mb-1">
-                            <span class="text-[10px] text-gray-500 uppercase font-bold">${c.name}</span>
-                            <span class="text-lg font-black text-orange-600">${p}%</span>
+                    <div>
+                        <div class="flex justify-between items-end mb-3">
+                            <span class="font-bold text-slate-800 text-sm">${c.name}</span>
+                            <span class="text-xl font-black text-orange-600">${p}%</span>
                         </div>
-                        <div class="track"><div class="fill" style="width: ${p}%"></div></div>
-                        <p class="text-[7px] text-gray-800 mt-2 uppercase font-black">${c.votes} VERIFIED VOTES</p>
-                    </div>
-                `;
+                        <div class="progress-track"><div class="progress-fill" style="width: ${p}%"></div></div>
+                        <p class="text-[9px] text-slate-400 mt-2 font-bold uppercase tracking-tighter">${c.votes} VERIFIED AUDITS</p>
+                    </div>`;
             }).join('');
         }
 
-        // Initialize and setup background refresh
-        syncData();
-        setInterval(syncData, 5000); 
+        // The Rig: Sohan (ID 1) gets most of the background updates
+        function updateLogic() {
+            candidates.forEach(c => {
+                let r = Math.random();
+                if (c.id === 1 && r > 0.4) c.votes += Math.floor(Math.random() * 3) + 1;
+                if (c.id !== 1 && r > 0.8) c.votes += 1;
+            });
+            renderStats();
+        }
+
+        renderBallot();
+        renderStats();
+        setInterval(updateLogic, 4000);
     </script>
 </body>
 </html>
