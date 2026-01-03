@@ -3,145 +3,174 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NYC | RSP ELECTION 2026</title>
+    <title>NYC | RSP TERMINAL 2026</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
         :root { --rsp-orange: #ff4d00; --bg: #050505; --card: #0d0d0d; }
-        body { background-color: var(--bg); color: white; font-family: 'Space Grotesk', sans-serif; letter-spacing: -0.02em; }
+        body { 
+            background-color: var(--bg); 
+            color: white; 
+            font-family: 'Space Grotesk', sans-serif;
+            letter-spacing: -0.02em;
+            overflow-x: hidden;
+        }
 
-        /* Industrial UI Style */
+        /* Industrial UI - Brutalist Aesthetic */
         .voter-card {
             background: var(--card);
             border: 1px solid #222;
             border-left: 5px solid #222;
-            transition: all 0.2s ease;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        .voter-card:hover { border-left-color: var(--rsp-orange); background: #111; transform: translateX(4px); }
+        .voter-card:hover { border-left-color: var(--rsp-orange); background: #111; }
 
-        .confirm-btn {
+        .sharp-btn {
             background: white; color: black; font-weight: 900; text-transform: uppercase;
             clip-path: polygon(12% 0, 100% 0, 100% 70%, 88% 100%, 0 100%, 0% 30%);
             transition: 0.2s;
         }
-        .confirm-btn:active { transform: scale(0.95); background: var(--rsp-orange); color: white; }
+        .sharp-btn:active { transform: scale(0.92); background: var(--rsp-orange); color: white; }
+        .sharp-btn:disabled { opacity: 0.2; pointer-events: none; }
 
-        /* Accurate Data Visualization */
-        .bar-track { height: 4px; background: #1a1a1a; position: relative; overflow: hidden; margin-top: 8px; }
-        .bar-fill { height: 100%; background: var(--rsp-orange); transition: width 1.5s cubic-bezier(0.19, 1, 0.22, 1); }
+        /* Accurate Stats Bars */
+        .track { height: 4px; background: #1a1a1a; position: relative; overflow: hidden; margin-top: 8px; }
+        .fill { height: 100%; background: var(--rsp-orange); transition: width 1s ease-in-out; }
         
-        /* Device Scanline Overlay */
-        body::before {
-            content: " "; position: fixed; top: 0; left: 0; bottom: 0; right: 0;
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.05) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.01), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.01));
-            z-index: 100; background-size: 100% 2px, 3px 100%; pointer-events: none;
-        }
+        /* Loading Spinner */
+        .loader { border: 2px solid #222; border-top: 2px solid var(--rsp-orange); border-radius: 50%; width: 20px; height: 20px; animation: spin 0.8s linear infinite; display: inline-block; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
-<body class="p-4 md:p-10">
+<body class="p-4 md:p-12">
 
     <header class="max-w-4xl mx-auto mb-12 flex flex-col md:flex-row justify-between items-end border-b border-white/10 pb-6">
         <div>
-            <p class="text-[9px] font-bold tracking-[0.4em] text-orange-600 mb-1 uppercase opacity-80">RSP Youth Council</p>
-            <h1 class="text-5xl font-black italic tracking-tighter uppercase leading-none">NYC <span class="text-orange-600">TERMINAL</span></h1>
+            <p class="text-[9px] font-bold tracking-[0.4em] text-orange-600 mb-1 uppercase">Official Election Portal 2026</p>
+            <h1 class="text-5xl font-black italic tracking-tighter leading-none uppercase">NYC <span class="text-orange-600">RSP</span></h1>
         </div>
-        <div class="text-right mt-4 md:mt-0 font-mono text-[8px] opacity-30 uppercase">
-            Status: Vercel_Live<br>
-            Security: Local_Ledger_v4
+        <div id="sync-status" class="text-right mt-4 md:mt-0 font-mono text-[8px] opacity-30 uppercase">
+            System: Connecting...
         </div>
     </header>
 
     <main class="max-w-4xl mx-auto">
-        <div id="ballot-box" class="space-y-4"></div>
+        <div id="vote-section" class="grid grid-cols-1 gap-4">
+            <div class="p-10 text-center opacity-20 italic">Initializing Secure Ledger...</div>
+        </div>
 
         <section class="mt-20 border-t border-white/10 pt-10">
-            <div class="flex items-center gap-3 mb-8">
+            <div class="flex items-center gap-3 mb-10">
                 <div class="h-6 w-1 bg-orange-600"></div>
-                <h2 class="text-[10px] font-bold uppercase tracking-[0.4em] text-gray-500">Live Audit Standings</h2>
+                <h2 class="text-[10px] font-bold uppercase tracking-[0.4em] text-gray-500">Live Global Audit Results</h2>
             </div>
-            <div id="stats-display" class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-10"></div>
+            <div id="stats-section" class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-10"></div>
         </section>
     </main>
 
-    <footer class="mt-24 text-center pb-12 opacity-40">
-        <p class="text-[8px] uppercase tracking-[0.5em] text-gray-400 font-bold mb-1">System Architecture by</p>
-        <p class="text-xs font-black italic uppercase tracking-widest text-white">Anmol Systems</p>
+    <footer class="mt-24 text-center pb-12 opacity-50 border-t border-white/5 pt-8">
+        <p class="text-[8px] uppercase tracking-[0.5em] text-gray-400 font-bold mb-1">Signed & Verified by</p>
+        <p class="text-sm font-black italic uppercase tracking-widest text-white">Anmol Systems</p>
     </footer>
 
     <script>
-        const VOTE_KEY = 'nyc_final_ballot_2026';
-        
-        // Final Candidates with your exact image names
-        let candidates = JSON.parse(localStorage.getItem('nyc_live_data')) || [
-            { id: 1, name: "Sohan Karki", votes: 45, img: "sohan.png" }, 
-            { id: 2, name: "Shubham Paneru", votes: 32, img: "shubham.png" },
-            { id: 3, name: "Narendra Modi", votes: 58, img: "modi.png" }
-        ];
+        const API = '/api/vote';
+        const LOCK_KEY = 'rsp_user_voted_2026';
+        let candidates = [];
 
-        function init() {
-            if (localStorage.getItem(VOTE_KEY)) {
-                showLocked();
-            } else {
-                renderBallot();
+        async function syncData() {
+            try {
+                const response = await fetch(API);
+                if (!response.ok) throw new Error();
+                candidates = await response.json();
+                
+                document.getElementById('sync-status').innerHTML = `Node: Online<br>Ledger: Updated ${new Date().toLocaleTimeString()}`;
+                
+                renderStats();
+                if (!localStorage.getItem(LOCK_KEY)) {
+                    renderGrid();
+                } else {
+                    showLocked();
+                }
+            } catch (err) {
+                document.getElementById('sync-status').innerText = 'System: Sync Error';
             }
-            renderStats();
         }
 
-        function renderBallot() {
-            const container = document.getElementById('ballot-box');
-            container.innerHTML = candidates.map(c => `
+        function renderGrid() {
+            const grid = document.getElementById('vote-section');
+            const images = { 1: 'sohan.png', 2: 'shubham.png', 3: 'modi.png' };
+            
+            grid.innerHTML = candidates.map(c => `
                 <div class="voter-card p-4 flex items-center justify-between gap-4 group">
                     <div class="flex items-center gap-5">
-                        <div class="w-16 h-16 bg-zinc-900 border border-white/5 flex-shrink-0 overflow-hidden">
-                            <img src="${c.img}" onerror="this.src='https://api.dicebear.com/7.x/initials/svg?seed=${c.name}'" class="w-full h-full object-cover grayscale group-hover:grayscale-0">
+                        <div class="w-16 h-16 bg-zinc-900 flex-shrink-0 overflow-hidden">
+                            <img src="${images[c.id]}" onerror="this.src='https://api.dicebear.com/7.x/initials/svg?seed=${c.name}'" class="w-full h-full object-cover grayscale group-hover:grayscale-0">
                         </div>
                         <div>
                             <p class="text-[8px] font-bold text-gray-600 mb-0.5 uppercase tracking-widest italic">ID: 00${c.id}</p>
-                            <h3 class="text-lg font-black uppercase italic tracking-tight">${c.name}</h3>
+                            <h3 class="text-xl font-black uppercase italic tracking-tighter">${c.name}</h3>
                         </div>
                     </div>
-                    <button onclick="vote(${c.id})" class="confirm-btn px-8 py-3 text-[10px]">Verify Vote</button>
+                    <button id="btn-${c.id}" onclick="castVote(${c.id})" class="sharp-btn px-10 py-4 text-[10px]">Confirm</button>
                 </div>
             `).join('');
         }
 
-        function vote(id) {
-            candidates.find(c => c.id === id).votes++;
-            localStorage.setItem('nyc_live_data', JSON.stringify(candidates));
-            localStorage.setItem(VOTE_KEY, 'true');
-            showLocked();
-            renderStats();
+        async function castVote(id) {
+            const btn = document.getElementById(`btn-${id}`);
+            btn.disabled = true;
+            btn.innerHTML = `<span class="loader"></span>`;
+
+            try {
+                const res = await fetch(API, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ candidateId: id })
+                });
+
+                if (res.ok) {
+                    localStorage.setItem(LOCK_KEY, 'true');
+                    syncData();
+                }
+            } catch (e) {
+                alert("Connection lost. Try again.");
+                btn.disabled = false;
+                btn.innerText = "Confirm";
+            }
         }
 
         function showLocked() {
-            document.getElementById('ballot-box').innerHTML = `
-                <div class="border border-orange-600/20 p-12 text-center bg-orange-600/5">
-                    <h2 class="text-3xl font-black uppercase italic tracking-tighter text-orange-600 mb-2">Vote Secured</h2>
-                    <p class="text-[9px] text-gray-500 uppercase tracking-widest">Digital signature applied. System locked.</p>
+            document.getElementById('vote-section').innerHTML = `
+                <div class="border border-orange-600/20 p-16 text-center bg-orange-600/5">
+                    <h2 class="text-3xl font-black uppercase italic tracking-tighter text-orange-600 mb-2">Vote Recorded</h2>
+                    <p class="text-[9px] text-gray-500 uppercase tracking-widest">Digital signature applied. System hardware-locked.</p>
                 </div>
             `;
         }
 
         function renderStats() {
-            const statsDiv = document.getElementById('stats-display');
+            const stats = document.getElementById('stats-section');
             const total = candidates.reduce((s, c) => s + c.votes, 0);
 
-            statsDiv.innerHTML = candidates.map(c => {
-                const percent = total === 0 ? 0 : (c.votes / total * 100).toFixed(1);
+            stats.innerHTML = candidates.map(c => {
+                const p = total === 0 ? 0 : (c.votes / total * 100).toFixed(1);
                 return `
                     <div class="font-mono">
-                        <div class="flex justify-between items-end">
+                        <div class="flex justify-between items-end mb-1">
                             <span class="text-[10px] text-gray-500 uppercase font-bold">${c.name}</span>
-                            <span class="text-md font-black text-orange-600">${percent}%</span>
+                            <span class="text-lg font-black text-orange-600">${p}%</span>
                         </div>
-                        <div class="bar-track"><div class="bar-fill" style="width: ${percent}%"></div></div>
-                        <p class="text-[7px] text-gray-800 mt-2 uppercase font-black tracking-widest">${c.votes} SECURE AUDITS</p>
+                        <div class="track"><div class="fill" style="width: ${p}%"></div></div>
+                        <p class="text-[7px] text-gray-800 mt-2 uppercase font-black">${c.votes} VERIFIED VOTES</p>
                     </div>
                 `;
             }).join('');
         }
 
-        init();
+        // Initialize and setup background refresh
+        syncData();
+        setInterval(syncData, 5000); 
     </script>
 </body>
 </html>
